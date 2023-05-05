@@ -8,11 +8,9 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.mob.DrownedEntity;
-import net.minecraft.text.TranslatableText;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -118,20 +116,19 @@ public class InGameHudMixin {
 
 		tessellator_1 = Tessellator.getInstance();
 		bufferBuilder_1 = tessellator_1.getBuffer();
-		GlStateManager.enableBlend();
-		GlStateManager.disableTexture();
-		GlStateManager.color4f(float_2, float_3, float_4, float_1);
-		bufferBuilder_1.begin(3, VertexFormats.POSITION);
+		GlStateManager._enableBlend();
+		GlStateManager._deleteTexture(GlStateManager._getActiveTexture());
+		GlStateManager._clearColor(float_2, float_3, float_4, float_1);
+		bufferBuilder_1.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
 	}
 
 	private void beginDrawLineColor()
 	{
 		tessellator_1 = Tessellator.getInstance();
 		bufferBuilder_1 = tessellator_1.getBuffer();
-		GlStateManager.enableBlend();
-		GlStateManager.disableTexture();
-		GlStateManager.blendColor(1, 1, 1, 1);
-		bufferBuilder_1.begin(3, VertexFormats.POSITION_COLOR);
+		GlStateManager._enableBlend();
+		GlStateManager._deleteTexture(GlStateManager._getActiveTexture());
+		bufferBuilder_1.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
 	}
 
 	private void addLinePoint(double x, double y, double z)
@@ -147,8 +144,8 @@ public class InGameHudMixin {
 	private void endDrawLine()
 	{
 		tessellator_1.draw();
-		GlStateManager.enableTexture();
-		GlStateManager.disableBlend();
+		GlStateManager._activeTexture(GlStateManager._getActiveTexture());
+		GlStateManager._disableBlend();
 	}
 
 }

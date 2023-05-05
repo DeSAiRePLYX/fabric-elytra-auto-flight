@@ -1,7 +1,6 @@
 package net.elytraautoflight;
 
 import com.google.gson.Gson;
-import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -10,19 +9,13 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.mob.DrownedEntity;
-import net.minecraft.entity.mob.IllagerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class ElytraAutoFlight implements ModInitializer, net.fabricmc.api.ClientModInitializer {
@@ -82,28 +75,28 @@ public class ElytraAutoFlight implements ModInitializer, net.fabricmc.api.Client
 
 	private void createAndShowSettings()
     {
-        ConfigBuilder configBuilder = ConfigBuilder.create().setTitle(new TranslatableText("text.elytraautoflight.title")).setSavingRunnable(() -> {saveSettings();});
-        ConfigCategory categoryGui = configBuilder.getOrCreateCategory(new TranslatableText("text.elytraautoflight.gui"));
-        ConfigCategory categoryFlightProfile = configBuilder.getOrCreateCategory(new TranslatableText(("text.elytraautoflight.flightprofile")));
+        ConfigBuilder configBuilder = ConfigBuilder.create().setTitle(Text.translatable("text.elytraautoflight.title")).setSavingRunnable(() -> {saveSettings();});
+        ConfigCategory categoryGui = configBuilder.getOrCreateCategory(Text.translatable("text.elytraautoflight.gui"));
+        ConfigCategory categoryFlightProfile = configBuilder.getOrCreateCategory(Text.translatable(("text.elytraautoflight.flightprofile")));
 
         ConfigEntryBuilder entryBuilder = ConfigEntryBuilder.create();
 
-        categoryGui.addEntry(entryBuilder.startIntField(new TranslatableText("text.elytraautoflight.guiX"), config.guiX).setDefaultValue(config.guiX).setSaveConsumer((x) -> config.guiX = x).build());
-        categoryGui.addEntry(entryBuilder.startIntField(new TranslatableText("text.elytraautoflight.guiY"), config.guiY).setDefaultValue(config.guiY).setSaveConsumer((x) -> config.guiY = x).build());
-        categoryGui.addEntry(entryBuilder.startIntField(new TranslatableText("text.elytraautoflight.guiWidth"), config.guiWidth).setDefaultValue(config.guiWidth).setSaveConsumer((x) -> config.guiWidth = x).build());
-        categoryGui.addEntry(entryBuilder.startIntField(new TranslatableText("text.elytraautoflight.guiHeight"), config.guiHeight).setDefaultValue(config.guiHeight).setSaveConsumer((x) -> config.guiHeight = x).build());
-        categoryGui.addEntry(entryBuilder.startIntField(new TranslatableText("text.elytraautoflight.guiSpan"), config.guiGraphRealWidth).setDefaultValue(config.guiGraphRealWidth).setSaveConsumer((x) -> config.guiGraphRealWidth = x).build());
-        categoryGui.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("text.elytraautoflight.displayGraph"), config.showGraph).setDefaultValue(config.showGraph).setSaveConsumer((x) -> config.showGraph = x).build());
+        categoryGui.addEntry(entryBuilder.startIntField(Text.translatable("text.elytraautoflight.guiX"), config.guiX).setDefaultValue(config.guiX).setSaveConsumer((x) -> config.guiX = x).build());
+        categoryGui.addEntry(entryBuilder.startIntField(Text.translatable("text.elytraautoflight.guiY"), config.guiY).setDefaultValue(config.guiY).setSaveConsumer((x) -> config.guiY = x).build());
+        categoryGui.addEntry(entryBuilder.startIntField(Text.translatable("text.elytraautoflight.guiWidth"), config.guiWidth).setDefaultValue(config.guiWidth).setSaveConsumer((x) -> config.guiWidth = x).build());
+        categoryGui.addEntry(entryBuilder.startIntField(Text.translatable("text.elytraautoflight.guiHeight"), config.guiHeight).setDefaultValue(config.guiHeight).setSaveConsumer((x) -> config.guiHeight = x).build());
+        categoryGui.addEntry(entryBuilder.startIntField(Text.translatable("text.elytraautoflight.guiSpan"), config.guiGraphRealWidth).setDefaultValue(config.guiGraphRealWidth).setSaveConsumer((x) -> config.guiGraphRealWidth = x).build());
+        categoryGui.addEntry(entryBuilder.startBooleanToggle(Text.translatable("text.elytraautoflight.displayGraph"), config.showGraph).setDefaultValue(config.showGraph).setSaveConsumer((x) -> config.showGraph = x).build());
 
-        categoryFlightProfile.addEntry(entryBuilder.startDoubleField(new TranslatableText("text.elytraautoflight.pullUpAngle"), config.pullUpAngle).setDefaultValue(config.pullUpAngle).setSaveConsumer((x) -> config.pullUpAngle = x).build());
-        categoryFlightProfile.addEntry(entryBuilder.startDoubleField(new TranslatableText("text.elytraautoflight.pullDownAngle"), config.pullDownAngle).setDefaultValue(config.pullDownAngle).setSaveConsumer((x) -> config.pullDownAngle = x).build());
-        categoryFlightProfile.addEntry(entryBuilder.startDoubleField(new TranslatableText("text.elytraautoflight.pullUpMinVelocity"), config.pullUpMinVelocity).setDefaultValue(config.pullUpMinVelocity).setSaveConsumer((x) -> config.pullUpMinVelocity = x).build());
-        categoryFlightProfile.addEntry(entryBuilder.startDoubleField(new TranslatableText("text.elytraautoflight.pullDownMaxVelocity"), config.pullDownMaxVelocity).setDefaultValue(config.pullDownMaxVelocity).setSaveConsumer((x) -> config.pullDownMaxVelocity = x).build());
-        categoryFlightProfile.addEntry(entryBuilder.startDoubleField(new TranslatableText("text.elytraautoflight.pullUpSpeed"), config.pullUpSpeed).setDefaultValue(config.pullUpSpeed).setSaveConsumer((x) -> config.pullUpSpeed = x).build());
-        categoryFlightProfile.addEntry(entryBuilder.startDoubleField(new TranslatableText("text.elytraautoflight.pullDownSpeed"), config.pullDownSpeed).setDefaultValue(config.pullDownSpeed).setSaveConsumer((x) -> config.pullDownSpeed = x).build());
+        categoryFlightProfile.addEntry(entryBuilder.startDoubleField(Text.translatable("text.elytraautoflight.pullUpAngle"), config.pullUpAngle).setDefaultValue(config.pullUpAngle).setSaveConsumer((x) -> config.pullUpAngle = x).build());
+        categoryFlightProfile.addEntry(entryBuilder.startDoubleField(Text.translatable("text.elytraautoflight.pullDownAngle"), config.pullDownAngle).setDefaultValue(config.pullDownAngle).setSaveConsumer((x) -> config.pullDownAngle = x).build());
+        categoryFlightProfile.addEntry(entryBuilder.startDoubleField(Text.translatable("text.elytraautoflight.pullUpMinVelocity"), config.pullUpMinVelocity).setDefaultValue(config.pullUpMinVelocity).setSaveConsumer((x) -> config.pullUpMinVelocity = x).build());
+        categoryFlightProfile.addEntry(entryBuilder.startDoubleField(Text.translatable("text.elytraautoflight.pullDownMaxVelocity"), config.pullDownMaxVelocity).setDefaultValue(config.pullDownMaxVelocity).setSaveConsumer((x) -> config.pullDownMaxVelocity = x).build());
+        categoryFlightProfile.addEntry(entryBuilder.startDoubleField(Text.translatable("text.elytraautoflight.pullUpSpeed"), config.pullUpSpeed).setDefaultValue(config.pullUpSpeed).setSaveConsumer((x) -> config.pullUpSpeed = x).build());
+        categoryFlightProfile.addEntry(entryBuilder.startDoubleField(Text.translatable("text.elytraautoflight.pullDownSpeed"), config.pullDownSpeed).setDefaultValue(config.pullDownSpeed).setSaveConsumer((x) -> config.pullDownSpeed = x).build());
 
 
-        minecraftClient.openScreen(configBuilder.build());
+        minecraftClient.setScreen(configBuilder.build());
 
     }
 
@@ -205,15 +198,15 @@ public class ElytraAutoFlight implements ModInitializer, net.fabricmc.api.Client
             }
 
             if (pullUp) {
-                minecraftClient.player.pitch -= config.pullUpSpeed;
+                minecraftClient.player.setPitch((float) (minecraftClient.player.getPitch() - config.pullUpSpeed));
 
-                if (minecraftClient.player.pitch <= config.pullUpAngle) minecraftClient.player.pitch = (float)config.pullUpAngle;
+                if (minecraftClient.player.getPitch() <= config.pullUpAngle) minecraftClient.player.setPitch((float) config.pullUpAngle);
             }
 
             if (pullDown) {
-                minecraftClient.player.pitch += config.pullDownSpeed;
+                minecraftClient.player.setPitch((float) (minecraftClient.player.getPitch() + config.pullDownSpeed));
 
-                if (minecraftClient.player.pitch >= config.pullDownAngle) minecraftClient.player.pitch = (float)config.pullDownAngle;
+                if (minecraftClient.player.getPitch() >= config.pullDownAngle) minecraftClient.player.setPitch((float) config.pullDownAngle);
             }
         }
         else

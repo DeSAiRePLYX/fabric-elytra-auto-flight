@@ -1,6 +1,5 @@
 package net.elytraautoflight;
-import net.fabricmc.loader.util.sat4j.core.Vec;
-import net.minecraft.util.math.Vec2f;
+
 import net.minecraft.util.math.Vec3d;
 
 public class GraphDataPoint {
